@@ -1,0 +1,66 @@
+{
+  "name": "i18n-nbsp",
+  "version": "0.0.0",
+  "description": "Automatically adds non-breaking spaces to i18n translation files JSON to fix bad word breaks and improve typography in localized frontends",
+  "author": "Serge Malinin <s@malinin.dev>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/malinindev/i18n-nbsp.git"
+  },
+  "homepage": "https://github.com/malinindev/i18n-nbsp",
+  "bugs": {
+    "url": "https://github.com/malinindev/i18n-nbsp/issues"
+  },
+  "keywords": [
+    "i18n",
+    "localization",
+    "translations",
+    "non-breaking space",
+    "nbsp",
+    "typography",
+    "json",
+    "frontend",
+    "locale"
+  ],
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "i18n-nbsp": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "dev": "tsc --project tsconfig.build.json --watch",
+    "build": "rm -rf dist && tsc --project tsconfig.build.json",
+    "build:pack": "bun run build && npm pack",
+    "release:prepare": "changeset",
+    "release:publish": "changeset publish",
+    "prepublishOnly": "bun run build && bun run check:all",
+    "test": "bun test",
+    "check:all": "bun run check:format && bun run check:lint && bun run check:type && bun run test",
+    "check:type": "tsc --noEmit",
+    "check:lint": "biome lint ./src",
+    "check:format": "biome format ./src",
+    "fix:lint": "biome lint --apply ./src",
+    "fix:format": "biome format --write ./src"
+  },
+  "engines": {
+    "bun": ">=1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.2.0",
+    "@changesets/cli": "^2.29.5",
+    "@types/bun": "^1.2.20",
+    "@types/estree": "^1.0.8",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "typescript": "^5.9.2"
+  }
+}
