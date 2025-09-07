@@ -66,22 +66,14 @@ export const fixFilePrepositionIssues = (
 };
 
 export const getRegexPatternsForLanguages = (prepositions: {
-  en: string[];
-  ru: string[];
-  uk: string[];
+  [language: string]: string[];
 }): RegExp[] => {
   const patterns: RegExp[] = [];
 
-  if (prepositions.en?.length > 0) {
-    patterns.push(createRegExp(prepositions.en));
-  }
-
-  if (prepositions.ru?.length > 0) {
-    patterns.push(createRegExp(prepositions.ru));
-  }
-
-  if (prepositions.uk?.length > 0) {
-    patterns.push(createRegExp(prepositions.uk));
+  for (const [, prepositionList] of Object.entries(prepositions)) {
+    if (prepositionList?.length > 0) {
+      patterns.push(createRegExp(prepositionList));
+    }
   }
 
   return patterns;

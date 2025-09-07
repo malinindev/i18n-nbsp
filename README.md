@@ -34,6 +34,25 @@ Default prepositions work for English, Russian and Ukrainian. To customize, crea
 }
 ```
 
+### Custom Languages
+
+You can add support for any custom language by adding it to the configuration:
+
+```json
+{
+  "localesPath": "./locales",
+  "prepositions": {
+    "en": ["to", "from", "in", "at", "on"],
+    "ru": ["в", "из", "на", "с", "к"],
+    "de": ["in", "an", "auf", "mit", "von", "zu"],
+    "fr": ["à", "de", "en", "dans", "sur", "avec"],
+    "your-custom-lang": ["preposition1", "preposition2"]
+  }
+}
+```
+
+**Note:** If you're adding prepositions for a commonly used language, please consider contributing them back to the project by opening a Pull Request. Your contribution will help other developers!
+
 ## Options
 
 - `--check` - check files (default)

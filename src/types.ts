@@ -1,12 +1,16 @@
 export interface PrepositionPatterns {
-  en: string[];
-  ru: string[];
-  uk: string[];
+  [language: string]: string[];
+}
+
+export interface IgnoreConfig {
+  patterns?: string[];
+  keys?: string[];
 }
 
 export interface Config {
   prepositions?: PrepositionPatterns;
   localesPath?: string;
+  ignore?: IgnoreConfig;
 }
 
 export interface CLIOptions {

@@ -41,8 +41,9 @@ export const loadConfig = (configPath?: string): Config => {
   if (!config.prepositions) {
     config.prepositions = DEFAULT_PREPOSITIONS;
   } else {
-    // Merge with defaults
+    // Merge with defaults for standard languages, keep custom languages as is
     config.prepositions = {
+      ...config.prepositions,
       en: config.prepositions.en || DEFAULT_PREPOSITIONS.en,
       ru: config.prepositions.ru || DEFAULT_PREPOSITIONS.ru,
       uk: config.prepositions.uk || DEFAULT_PREPOSITIONS.uk,
