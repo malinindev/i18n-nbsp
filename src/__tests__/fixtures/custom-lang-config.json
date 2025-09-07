@@ -1,0 +1,7 @@
+{
+  "localesPath": "src/__tests__/fixtures/custom-locales",
+  "prepositions": {
+    "klingon": ["pagh", "vagh", "jup", "nugh", "tlhol", "ram"],
+    "elvish": ["nan", "or", "vi", "ed", "en", "min"]
+  }
+}
