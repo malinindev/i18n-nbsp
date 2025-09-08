@@ -1,5 +1,5 @@
-export interface PrepositionPatterns {
-  [language: string]: string[];
+export interface LanguagePatterns {
+  [language: string]: string[] | null;
 }
 
 export interface IgnoreConfig {
@@ -8,7 +8,7 @@ export interface IgnoreConfig {
 }
 
 export interface Config {
-  prepositions?: PrepositionPatterns;
+  patterns?: LanguagePatterns;
   localesPath?: string;
   ignore?: IgnoreConfig;
 }

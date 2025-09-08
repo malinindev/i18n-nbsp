@@ -7,6 +7,8 @@ const TEST_DIR = 'src/__tests__/fixtures/locales';
 const CONFIG_FILE = 'src/__tests__/fixtures/test-config.json';
 const CUSTOM_TEST_DIR = 'src/__tests__/fixtures/custom-locales';
 const CUSTOM_CONFIG_FILE = 'src/__tests__/fixtures/custom-lang-config.json';
+const REGIONAL_TEST_DIR = 'src/__tests__/fixtures/regional-locales';
+const REGIONAL_CONFIG_FILE = 'src/__tests__/fixtures/regional-config.json';
 
 // Store original fixture contents to restore after tests
 let originalFixtures: {
@@ -15,6 +17,9 @@ let originalFixtures: {
   uk: string;
   klingon: string;
   elvish: string;
+  enAuBlog: string;
+  enAuLpFeatures: string;
+  deChCatalog: string;
 };
 
 const backupOriginalFixtures = (): void => {
@@ -23,6 +28,19 @@ const backupOriginalFixtures = (): void => {
   const ukFile = path.join(TEST_DIR, 'uk', 'common.json');
   const klingonFile = path.join(CUSTOM_TEST_DIR, 'klingon', 'common.json');
   const elvishFile = path.join(CUSTOM_TEST_DIR, 'elvish', 'common.json');
+  const enAuBlogFile = path.join(REGIONAL_TEST_DIR, 'en-AU', 'blog.json');
+  const enAuLpFeaturesFile = path.join(
+    REGIONAL_TEST_DIR,
+    'en-AU',
+    'lp',
+    'features.json'
+  );
+  const deChCatalogFile = path.join(
+    REGIONAL_TEST_DIR,
+    'de-CH',
+    'products',
+    'catalog.json'
+  );
 
   originalFixtures = {
     en: fs.readFileSync(enFile, 'utf-8'),
@@ -30,6 +48,9 @@ const backupOriginalFixtures = (): void => {
     uk: fs.readFileSync(ukFile, 'utf-8'),
     klingon: fs.readFileSync(klingonFile, 'utf-8'),
     elvish: fs.readFileSync(elvishFile, 'utf-8'),
+    enAuBlog: fs.readFileSync(enAuBlogFile, 'utf-8'),
+    enAuLpFeatures: fs.readFileSync(enAuLpFeaturesFile, 'utf-8'),
+    deChCatalog: fs.readFileSync(deChCatalogFile, 'utf-8'),
   };
 };
 
@@ -39,12 +60,28 @@ const restoreOriginalFixtures = (): void => {
   const ukFile = path.join(TEST_DIR, 'uk', 'common.json');
   const klingonFile = path.join(CUSTOM_TEST_DIR, 'klingon', 'common.json');
   const elvishFile = path.join(CUSTOM_TEST_DIR, 'elvish', 'common.json');
+  const enAuBlogFile = path.join(REGIONAL_TEST_DIR, 'en-AU', 'blog.json');
+  const enAuLpFeaturesFile = path.join(
+    REGIONAL_TEST_DIR,
+    'en-AU',
+    'lp',
+    'features.json'
+  );
+  const deChCatalogFile = path.join(
+    REGIONAL_TEST_DIR,
+    'de-CH',
+    'products',
+    'catalog.json'
+  );
 
   fs.writeFileSync(enFile, originalFixtures.en);
   fs.writeFileSync(ruFile, originalFixtures.ru);
   fs.writeFileSync(ukFile, originalFixtures.uk);
   fs.writeFileSync(klingonFile, originalFixtures.klingon);
   fs.writeFileSync(elvishFile, originalFixtures.elvish);
+  fs.writeFileSync(enAuBlogFile, originalFixtures.enAuBlog);
+  fs.writeFileSync(enAuLpFeaturesFile, originalFixtures.enAuLpFeatures);
+  fs.writeFileSync(deChCatalogFile, originalFixtures.deChCatalog);
 };
 
 describe('i18n-nbsp CLI tool', () => {
@@ -112,6 +149,27 @@ describe('i18n-nbsp CLI tool', () => {
 
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('Error:');
+  });
+
+  test('should show helpful error when no JSON files found', () => {
+    const emptyDir = 'src/__tests__/fixtures/empty-dir';
+
+    // Ensure directory exists and is empty
+    if (fs.existsSync(emptyDir)) {
+      fs.rmSync(emptyDir, { recursive: true });
+    }
+    fs.mkdirSync(emptyDir, { recursive: true });
+
+    const result = runI18nNbsp(['--check', emptyDir]);
+
+    // Clean up
+    fs.rmSync(emptyDir, { recursive: true });
+
+    expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain('No JSON files found');
+    expect(result.stderr).toContain('Make sure the locales path is correct');
+    expect(result.stderr).toContain('Use --locales flag to specify the path');
+    expect(result.stderr).toContain('Set "localesPath" in your config file');
   });
 
   test('should work with locales flag', () => {
@@ -201,5 +259,102 @@ describe('i18n-nbsp CLI tool', () => {
     );
     expect(elvishContent).toContain('nan\u00A0friend'); // "nan friend" should become "nan<nbsp>friend"
     expect(elvishContent).toContain('vi\u00A0your'); // "vi your" should become "vi<nbsp>your"
+  });
+
+  test('should work with regional languages and nested folders', () => {
+    // First check that issues exist in regional languages with nested structure
+    const checkResult = runI18nNbsp([
+      '--config',
+      REGIONAL_CONFIG_FILE,
+      '--check',
+      REGIONAL_TEST_DIR,
+    ]);
+    expect(checkResult.exitCode).toBe(1); // Should find issues
+    expect(checkResult.stdout).toContain(
+      'Checking prepositions in locale files'
+    );
+    expect(checkResult.stdout).toContain('en-AU/blog.json'); // Should process en-AU files using 'en' patterns
+    expect(checkResult.stdout).toContain('en-AU/lp/features.json'); // Should handle nested folders
+    expect(checkResult.stdout).toContain('de-CH/products/catalog.json'); // Should process de-CH using 'de' patterns
+
+    // Fix the issues
+    const fixResult = runI18nNbsp([
+      '--config',
+      REGIONAL_CONFIG_FILE,
+      '--fix',
+      REGIONAL_TEST_DIR,
+    ]);
+    expect(fixResult.exitCode).toBe(0);
+    expect(fixResult.stdout).toContain('Fixing preposition issues');
+    expect(fixResult.stdout).toContain('Successfully fixed');
+
+    // Verify issues are fixed
+    const verifyResult = runI18nNbsp([
+      '--config',
+      REGIONAL_CONFIG_FILE,
+      '--check',
+      REGIONAL_TEST_DIR,
+    ]);
+    expect(verifyResult.exitCode).toBe(0);
+    expect(verifyResult.stdout).toContain('No preposition issues found');
+
+    // Verify specific fixes in en-AU files (should use 'en' patterns)
+    const enAuBlogContent = fs.readFileSync(
+      path.join(REGIONAL_TEST_DIR, 'en-AU', 'blog.json'),
+      'utf-8'
+    );
+    expect(enAuBlogContent).toContain('to\u00A0our'); // "to our" should become "to<nbsp>our"
+
+    const enAuFeaturesContent = fs.readFileSync(
+      path.join(REGIONAL_TEST_DIR, 'en-AU', 'lp', 'features.json'),
+      'utf-8'
+    );
+    expect(enAuFeaturesContent).toContain('to\u00A0our'); // "to our" should become "to<nbsp>our"
+
+    // Verify specific fixes in de-CH files (should use 'de' patterns)
+    const deChCatalogContent = fs.readFileSync(
+      path.join(REGIONAL_TEST_DIR, 'de-CH', 'products', 'catalog.json'),
+      'utf-8'
+    );
+    expect(deChCatalogContent).toContain('in\u00A0unserem'); // "in unserem" should become "in<nbsp>unserem"
+  });
+
+  test('should allow disabling languages with null values', async () => {
+    // Create a config that disables Russian
+    const disableConfig = {
+      localesPath: './src/__tests__/fixtures/locales',
+      patterns: {
+        ru: null, // Disable Russian processing
+      },
+    };
+
+    const disableConfigFile = path.join(
+      process.cwd(),
+      'src/__tests__/fixtures/disable-ru-config.json'
+    );
+    fs.writeFileSync(disableConfigFile, JSON.stringify(disableConfig, null, 2));
+
+    try {
+      // Run check with disabled Russian
+      const checkResult = runI18nNbsp([
+        '--check',
+        '--config',
+        disableConfigFile,
+      ]);
+
+      // Should exit with code 1 (errors found) but not include Russian files in output
+      expect(checkResult.exitCode).toBe(1);
+
+      // Check that Russian files are not mentioned in the output
+      expect(checkResult.stdout).not.toContain('ru/common.json');
+
+      // But English files should still be processed and show errors
+      expect(checkResult.stdout).toContain('en/common.json');
+    } finally {
+      // Clean up
+      if (fs.existsSync(disableConfigFile)) {
+        fs.unlinkSync(disableConfigFile);
+      }
+    }
   });
 });

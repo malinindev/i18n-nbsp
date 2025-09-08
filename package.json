@@ -31,7 +31,8 @@
   "files": [
     "dist",
     "README.md",
-    "LICENSE"
+    "LICENSE",
+    "i18n-nbsp.config.json"
   ],
   "scripts": {
     "dev": "tsc --project tsconfig.build.json --watch",

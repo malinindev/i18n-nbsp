@@ -1,0 +1,7 @@
+{
+  "localesPath": "src/__tests__/fixtures/regional-locales",
+  "patterns": {
+    "en": ["at", "by", "in", "of", "on", "to", "for", "from", "with"],
+    "de": ["in", "an", "auf", "mit", "von", "zu", "bei", "nach", "aus"]
+  }
+}
