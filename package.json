@@ -1,6 +1,6 @@
 {
   "name": "i18n-nbsp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Automatically adds non-breaking spaces to i18n translation files JSON to fix bad word breaks and improve typography in localized frontends",
   "author": "Serge Malinin <s@malinin.dev>",
   "license": "MIT",
