@@ -1,6 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { DEFAULT_PREPOSITIONS } from '../consts.js';
+import defaultConfigJson from '../../i18n-nbsp.config.json' with {
+  type: 'json',
+};
+import { DEFAULT_LOCALE_PATH } from '../consts.js';
 import type { Config } from '../types.js';
 
 export const loadConfig = (configPath?: string): Config => {
@@ -37,18 +40,25 @@ export const loadConfig = (configPath?: string): Config => {
     }
   }
 
-  // Apply defaults
-  if (!config.prepositions) {
-    config.prepositions = DEFAULT_PREPOSITIONS;
-  } else {
-    // Merge with defaults for standard languages, keep custom languages as is
-    config.prepositions = {
-      ...config.prepositions,
-      en: config.prepositions.en || DEFAULT_PREPOSITIONS.en,
-      ru: config.prepositions.ru || DEFAULT_PREPOSITIONS.ru,
-      uk: config.prepositions.uk || DEFAULT_PREPOSITIONS.uk,
-    };
+  // Apply defaults - merge user config with defaults from i18n-nbsp.config.json
+  config.localesPath = config.localesPath || DEFAULT_LOCALE_PATH;
+
+  // Merge patterns with special handling for null values (which disable languages)
+  const mergedPatterns: { [language: string]: string[] } = {
+    ...defaultConfigJson.patterns,
+  };
+  if (config.patterns) {
+    for (const [language, patterns] of Object.entries(config.patterns)) {
+      if (patterns === null) {
+        // null disables the language
+        delete mergedPatterns[language];
+      } else {
+        // Replace default patterns for this language
+        mergedPatterns[language] = patterns;
+      }
+    }
   }
+  config.patterns = mergedPatterns;
 
   return config;
 };

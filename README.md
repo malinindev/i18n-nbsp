@@ -1,6 +1,6 @@
 # i18n-nbsp
 
-Automatically adds non-breaking spaces after prepositions in i18n JSON files.
+Automatically adds non-breaking spaces after prepositions, conjunctions, articles, and negations in i18n JSON files.
 
 ## Usage
 
@@ -21,15 +21,19 @@ i18n-nbsp --config ./my-config.json --fix ./locales
 
 ## Configuration
 
-Default prepositions work for English, Russian and Ukrainian. To customize, create `i18n-nbsp.config.json`:
+**Default settings:**
+- **Locales path**: `./public/locales` (common for most projects)
+- **Supported languages**: English, Russian, Ukrainian, German, French, Italian, Spanish, Dutch, Polish
+- **Full list of patterns**: See [i18n-nbsp.config.json](./i18n-nbsp.config.json)
+
+To customize, create `i18n-nbsp.config.json`:
 
 ```json
 {
   "localesPath": "./public/locales",
-  "prepositions": {
-    "en": ["to", "from", "in", "at", "on"],
-    "ru": ["в", "из", "на", "с", "к"],
-    "uk": ["в", "на", "від", "до", "з"]
+  "patterns": {
+    "en": ["at", "in", "to", "and", "or"],
+    "ru": ["в", "на", "с", "и", "или"]
   }
 }
 ```
@@ -40,18 +44,29 @@ You can add support for any custom language by adding it to the configuration:
 
 ```json
 {
-  "localesPath": "./locales",
-  "prepositions": {
-    "en": ["to", "from", "in", "at", "on"],
-    "ru": ["в", "из", "на", "с", "к"],
-    "de": ["in", "an", "auf", "mit", "von", "zu"],
-    "fr": ["à", "de", "en", "dans", "sur", "avec"],
-    "your-custom-lang": ["preposition1", "preposition2"]
+  "localesPath": "./public/locales",
+  "patterns": {
+    "en": ["at", "in", "and"],
+    "your-custom-lang": ["word1", "word2"]
   }
 }
 ```
 
-**Note:** If you're adding prepositions for a commonly used language, please consider contributing them back to the project by opening a Pull Request. Your contribution will help other developers!
+### Disabling Languages
+
+To disable processing for specific languages, set them to `null`:
+
+```json
+{
+  "patterns": {
+    "de": null
+  }
+}
+```
+
+This will completely skip processing for Russian and German files, even if they are present in your locales directory.
+
+**Note:** If you're adding patterns for a commonly used language, please consider contributing them back to the project by opening a Pull Request. Your contribution will help other developers!
 
 ## Options
 
