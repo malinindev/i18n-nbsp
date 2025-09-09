@@ -12,7 +12,7 @@ const REGIONAL_CONFIG_FILE = 'src/__tests__/fixtures/regional-config.json';
 
 // Store original fixture contents to restore after tests
 let originalFixtures: {
-  en: string;
+  es: string;
   ru: string;
   uk: string;
   klingon: string;
@@ -23,7 +23,7 @@ let originalFixtures: {
 };
 
 const backupOriginalFixtures = (): void => {
-  const enFile = path.join(TEST_DIR, 'en', 'common.json');
+  const esFile = path.join(TEST_DIR, 'es', 'common.json');
   const ruFile = path.join(TEST_DIR, 'ru', 'common.json');
   const ukFile = path.join(TEST_DIR, 'uk', 'common.json');
   const klingonFile = path.join(CUSTOM_TEST_DIR, 'klingon', 'common.json');
@@ -43,7 +43,7 @@ const backupOriginalFixtures = (): void => {
   );
 
   originalFixtures = {
-    en: fs.readFileSync(enFile, 'utf-8'),
+    es: fs.readFileSync(esFile, 'utf-8'),
     ru: fs.readFileSync(ruFile, 'utf-8'),
     uk: fs.readFileSync(ukFile, 'utf-8'),
     klingon: fs.readFileSync(klingonFile, 'utf-8'),
@@ -55,7 +55,7 @@ const backupOriginalFixtures = (): void => {
 };
 
 const restoreOriginalFixtures = (): void => {
-  const enFile = path.join(TEST_DIR, 'en', 'common.json');
+  const esFile = path.join(TEST_DIR, 'es', 'common.json');
   const ruFile = path.join(TEST_DIR, 'ru', 'common.json');
   const ukFile = path.join(TEST_DIR, 'uk', 'common.json');
   const klingonFile = path.join(CUSTOM_TEST_DIR, 'klingon', 'common.json');
@@ -74,7 +74,7 @@ const restoreOriginalFixtures = (): void => {
     'catalog.json'
   );
 
-  fs.writeFileSync(enFile, originalFixtures.en);
+  fs.writeFileSync(esFile, originalFixtures.es);
   fs.writeFileSync(ruFile, originalFixtures.ru);
   fs.writeFileSync(ukFile, originalFixtures.uk);
   fs.writeFileSync(klingonFile, originalFixtures.klingon);
@@ -200,13 +200,13 @@ describe('i18n-nbsp CLI tool', () => {
 
     // Read the fixed file and verify non-breaking spaces
     const fixedContent = fs.readFileSync(
-      path.join(TEST_DIR, 'en', 'common.json'),
+      path.join(TEST_DIR, 'es', 'common.json'),
       'utf-8'
     );
 
     // Non-breaking space is \u00A0 which appears as bytes c2 a0 in UTF-8
     expect(fixedContent).toContain('\u00A0'); // Should contain non-breaking spaces
-    expect(fixedContent).toContain('to\u00A0our'); // "to our" should become "to<nbsp>our"
+    expect(fixedContent).toContain('a\u00A0nuestra'); // "a nuestra" should become "a<nbsp>nuestra"
   });
 
   test('should work with custom languages (klingon and elvish)', () => {
@@ -348,8 +348,8 @@ describe('i18n-nbsp CLI tool', () => {
       // Check that Russian files are not mentioned in the output
       expect(checkResult.stdout).not.toContain('ru/common.json');
 
-      // But English files should still be processed and show errors
-      expect(checkResult.stdout).toContain('en/common.json');
+      // But Spanish files should still be processed and show errors
+      expect(checkResult.stdout).toContain('es/common.json');
     } finally {
       // Clean up
       if (fs.existsSync(disableConfigFile)) {

@@ -1,12 +1,12 @@
 import path from 'node:path';
-import { COLORS } from '../consts.js';
+import { CONSOLE_COLORS } from '../consts.js';
 import type { ProcessResult } from '../types.js';
 
 export const printCheckResults = (
   result: ProcessResult,
   baseDir: string
 ): void => {
-  const { BOLD, RESET, YELLOW, RED, GREEN, CYAN } = COLORS;
+  const { BOLD, RESET, YELLOW, RED, GREEN, CYAN } = CONSOLE_COLORS;
 
   console.log(
     `${BOLD}${CYAN}Checking prepositions in locale files...${RESET}\n`
@@ -51,7 +51,7 @@ export const printFixResults = (
   result: ProcessResult,
   baseDir: string
 ): void => {
-  const { BOLD, RESET, YELLOW, GREEN, CYAN, BLUE } = COLORS;
+  const { BOLD, RESET, YELLOW, GREEN, CYAN, BLUE } = CONSOLE_COLORS;
 
   console.log(
     `${BOLD}${CYAN}Fixing preposition issues in locale files...${RESET}\n`
@@ -82,7 +82,7 @@ export const printFixResults = (
 };
 
 export const printHelp = (): void => {
-  const { BOLD, RESET, CYAN, YELLOW, GREEN } = COLORS;
+  const { BOLD, RESET, CYAN, YELLOW, GREEN } = CONSOLE_COLORS;
 
   console.log(
     `${BOLD}${CYAN}i18n-nbsp${RESET} - Non-breaking space fixer for i18n JSON files\n`

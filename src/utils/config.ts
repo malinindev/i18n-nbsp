@@ -65,6 +65,6 @@ export const loadConfig = (configPath?: string): Config => {
 
 export const createRegExp = (prepositions: string[]): RegExp => {
   const prepositionGroup = prepositions.join('|');
-  // Match prepositions followed by regular space but not by non-breaking space
-  return new RegExp(`\\b(${prepositionGroup}) (?!\\u00A0)`, 'gi');
+  // works for both words and symbols
+  return new RegExp(`(?<!\\w)(${prepositionGroup}) (?!\\u00A0)`, 'gi');
 };

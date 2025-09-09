@@ -55,9 +55,6 @@ export const fixFilePrepositionIssues = (
     fixedContent = fixedContent.replace(
       pattern,
       (_match: string, preposition: string) => {
-        // Replace the specific space after preposition with non-breaking space
-        // The regex pattern is: \b(preposition) (?!\u00A0)
-        // So we replace "preposition " with "preposition\u00A0"
         return `${preposition}${NON_BREAKING_SPACE}`;
       }
     );
