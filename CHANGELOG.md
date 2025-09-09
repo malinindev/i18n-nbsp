@@ -1,5 +1,11 @@
 # i18n-nbsp
 
+## 0.0.3
+
+### Patch Changes
+
+- b773f53: update config + minor fixes
+
 ## 0.0.2
 
 ### Patch Changes
