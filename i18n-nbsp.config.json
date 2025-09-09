@@ -1,6 +1,5 @@
 {
   "patterns": {
-    "en": ["a", "an", "the", "to", "of", "in", "at", "on", "for"],
     "ru": [
       "в",
       "на",

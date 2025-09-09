@@ -2,8 +2,7 @@ export const DEFAULT_LOCALE_PATH = './public/locales';
 
 export const NON_BREAKING_SPACE = '\u00A0';
 
-// Console colors
-export const COLORS = {
+export const CONSOLE_COLORS = {
   BOLD: '\u001b[1m',
   RESET: '\u001b[0m',
   YELLOW: '\x1b[33m',
